@@ -1,0 +1,112 @@
+/* 원본 이미지: 1559 x 1009
+   메시지 영역: x 229–1360, y 332–683 (아래 % 값은 이 좌표에서 계산) */
+
+/* Neo둥근모: 90년대 PC통신 둥근모꼴을 되살린 16px 비트맵 글꼴 (OFL) */
+@font-face {
+  font-family: "NeoDunggeunmo";
+  src: url("assets/fonts/neodgm.woff2") format("woff2"),
+       url("assets/fonts/neodgm.woff") format("woff");
+  font-display: block;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  overflow: hidden;
+}
+
+.screen {
+  position: relative;
+  /* 화면에 들어가는 가장 큰 크기, 비율 고정 */
+  width: min(100vw, 100dvh * 1559 / 1009);
+  aspect-ratio: 1559 / 1009;
+  container-type: inline-size;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.screen__bg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.screen__cursor-patch {
+  position: absolute;
+  left: 14.94%;   /* 233px */
+  top: 33.6%;     /* 339px */
+  width: 0.58%;   /* 9px */
+  height: 5.2%;   /* 52px */
+  background: rgb(1, 22, 170);
+}
+
+.message {
+  position: absolute;
+  left: 14.69%;   /* 229px */
+  top: 32.9%;     /* 332px */
+  width: 72.55%;  /* 1131px */
+  height: 34.79%; /* 351px */
+  padding: 0.7cqw 1cqw;
+  overflow: hidden;
+
+  font-family: "NeoDunggeunmo", "DungGeunMo", "Gulim", monospace;
+  font-size: 2.05cqw;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  color: #e6ecff;
+  /* 안티앨리어싱을 줄여 픽셀 경계를 살리고, CRT 번짐만 살짝 */
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  text-rendering: optimizeSpeed;
+  text-shadow: 0 0 0.12cqw rgba(170, 200, 255, 0.35);
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.message__text {
+  white-space: pre-wrap;
+}
+
+.message__cursor {
+  display: inline-block;
+  width: 0.14em;
+  height: 1.15em;
+  margin-left: 0.05em;
+  vertical-align: -0.2em;
+  background: currentColor;
+  animation: blink 1s steps(1) infinite;
+}
+
+.message__hint {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  color: #b4caff;
+  animation: blink 1.2s steps(1) infinite;
+}
+
+.message__hint[hidden] {
+  display: none;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}

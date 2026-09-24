@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>쪽지보내기</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="loader.css">
+</head>
+<body>
+  <!-- 최초 진입 시 PC통신 접속 로딩 화면 -->
+  <div class="loader" id="loader" role="status">
+    <canvas class="loader__noise" id="loaderNoise" aria-hidden="true"></canvas>
+    <div class="loader__term">
+      <p class="loader__line" data-at="300">ATDT 01410</p>
+      <p class="loader__line loader__line--main" data-at="900">PC통신 접속중<span class="loader__dots" id="loaderDots"></span><span class="loader__cursor" aria-hidden="true"></span></p>
+      <p class="loader__line" data-at="3200">CONNECT 14400</p>
+    </div>
+    <div class="loader__flash" aria-hidden="true"></div>
+  </div>
+
+  <main class="screen" aria-label="PC통신 쪽지 화면">
+    <img class="screen__bg" src="assets/background.png" alt="쪽지보내기 창. 수신인 ID 서재혁" draggable="false">
+
+    <!-- 이미지에 그려진 정지 커서를 가리는 패치 -->
+    <div class="screen__cursor-patch" aria-hidden="true"></div>
+
+    <!-- 이미지의 빈 메시지 영역 위에 얹는 텍스트 -->
+    <div class="message" id="message" aria-live="polite">
+      <span class="message__text" id="messageText"></span><span class="message__cursor" aria-hidden="true"></span>
+      <p class="message__hint" id="hint">화면을 누르면 쪽지를 씁니다</p>
+    </div>
+  </main>
+
+  <script src="loader.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

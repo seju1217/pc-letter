@@ -1,0 +1,16 @@
+# Vercel CLI
+.vercel
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Logs / env
+*.log
+.env*
