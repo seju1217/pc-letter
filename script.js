@@ -49,16 +49,64 @@ function setupAudio(ctx) {
   limiter.attack.value = 0.001;
   limiter.release.value = 0.05;
 
-  highpass.connect(limiter).connect(ctx.destination);
+  // 구형 Safari/WebView는 connect()가 노드를 돌려주지 않아 체이닝하지 않음
+  highpass.connect(limiter);
+  limiter.connect(ctx.destination);
   soundBus = highpass;
 }
 
+// AudioContext는 한 번만 만들고 계속 재사용
 function initAudio() {
   if (audioCtx) return;
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   if (!AudioContext) return;
-  setupAudio(new AudioContext());
+  // iOS 17+: 벨소리(무음) 스위치가 켜져 있어도 소리가 나도록 재생용 세션으로
+  try {
+    if (navigator.audioSession) navigator.audioSession.type = 'playback';
+  } catch (e) {}
+  try {
+    setupAudio(new AudioContext());
+  } catch (e) {
+    audioCtx = null;
+  }
 }
+
+// suspended(자동재생 정책), interrupted(iOS 전화·백그라운드 전환) 등 running이 아니면 다시 켬
+function resumeAudio() {
+  if (!audioCtx || audioCtx.state === 'running' || audioCtx.state === 'closed') return;
+  try {
+    const result = audioCtx.resume();
+    if (result && result.catch) result.catch(() => {});
+  } catch (e) {}
+}
+
+// 사용자 입력 이벤트 안에서 호출: 생성 + resume + 무음 버퍼 1회 재생으로 모바일 오디오 unlock
+let audioUnlocked = false;
+function unlockAudio() {
+  initAudio();
+  if (!audioCtx) return;
+  resumeAudio();
+  if (audioUnlocked) return;
+  try {
+    const silent = audioCtx.createBufferSource();
+    silent.buffer = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
+    silent.connect(audioCtx.destination);
+    silent.start(0);
+  } catch (e) {}
+  if (audioCtx.state === 'running') audioUnlocked = true;
+}
+
+// 브라우저마다 '사용자 입력'으로 인정하는 이벤트가 달라서 (Chrome: pointerup·touchend·click,
+// iOS: touchend·click 등) 여러 이벤트에서 모두 시도. 이미 켜져 있으면 아무 일도 하지 않음
+['pointerdown', 'pointerup', 'touchstart', 'touchend', 'mousedown', 'click', 'keydown'].forEach((type) => {
+  document.addEventListener(type, unlockAudio, { capture: true, passive: true });
+});
+
+// 다른 앱/탭에 다녀오면 멈춰 있을 수 있으니 돌아올 때 다시 켬
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) resumeAudio();
+});
+window.addEventListener('pageshow', resumeAudio);
 
 const rand = (min, max) => min + Math.random() * (max - min);
 
@@ -77,7 +125,9 @@ function noiseHit({ when, type, freq, q, gain, decay }) {
   env.gain.linearRampToValueAtTime(gain, when + 0.0008);
   env.gain.exponentialRampToValueAtTime(0.0001, when + decay);
 
-  source.connect(filter).connect(env).connect(soundBus);
+  source.connect(filter);
+  filter.connect(env);
+  env.connect(soundBus);
   const offset = Math.random() * (noiseBuffer.duration - decay - 0.02);
   source.start(when, offset, decay + 0.01);
 }
@@ -85,6 +135,14 @@ function noiseHit({ when, type, freq, q, gain, decay }) {
 // 클릭 어택 + 노이즈 버스트 + 짧은 감쇠로 만드는 '타닥' 키 소리
 function playKeySound(char) {
   if (!audioCtx || !noiseBuffer) return;
+  // 타이핑 도중 다시 멈춘 경우 안전하게 재개 (소리 오류가 타이핑을 멈추지 않도록 감쌈)
+  if (audioCtx.state !== 'running') resumeAudio();
+  try {
+    playKeyLayers(char);
+  } catch (e) {}
+}
+
+function playKeyLayers(char) {
   const now = audioCtx.currentTime;
   const isSpace = char === ' ';
   const isEnter = char === '\n';
@@ -153,8 +211,7 @@ function togglePause() {
 // 브라우저 자동재생 정책 때문에 첫 클릭/키 입력 후 시작.
 // 작성 중에 누르면 일시정지/재개, 다 쓴 뒤 다시 누르면 처음부터 다시 씁니다.
 function handleStart() {
-  initAudio();
-  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  unlockAudio();
   if (!typing) startTyping();
   else togglePause();
 }
