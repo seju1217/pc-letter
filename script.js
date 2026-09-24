@@ -114,36 +114,49 @@ function delayAfter(char) {
   return delay;
 }
 
+let chars = [];
+let index = 0;
+let paused = false;
+
+function typeNext() {
+  if (index >= chars.length) {
+    typing = false;
+    return;
+  }
+  const char = chars[index++];
+  textEl.textContent += char;
+  playKeySound(char);
+  messageEl.scrollTop = messageEl.scrollHeight; // 넘치면 마지막 줄이 보이게
+  timer = setTimeout(typeNext, delayAfter(char));
+}
+
 function startTyping() {
-  const chars = Array.from(MESSAGE); // 이모지 등 서로게이트 문자도 한 글자로
-  let index = 0;
+  chars = Array.from(MESSAGE); // 이모지 등 서로게이트 문자도 한 글자로
+  index = 0;
+  paused = false;
 
   clearTimeout(timer);
   textEl.textContent = '';
   hintEl.hidden = true;
   typing = true;
 
-  function typeNext() {
-    if (index >= chars.length) {
-      typing = false;
-      return;
-    }
-    const char = chars[index++];
-    textEl.textContent += char;
-    playKeySound(char);
-    messageEl.scrollTop = messageEl.scrollHeight; // 넘치면 마지막 줄이 보이게
-    timer = setTimeout(typeNext, delayAfter(char));
-  }
-
   timer = setTimeout(typeNext, 400);
 }
 
+// 작성 중 클릭: 현재 위치에서 멈춤 ↔ 멈춘 곳부터 이어서 쓰기
+function togglePause() {
+  paused = !paused;
+  clearTimeout(timer);
+  if (!paused) timer = setTimeout(typeNext, TYPING_SPEED);
+}
+
 // 브라우저 자동재생 정책 때문에 첫 클릭/키 입력 후 시작.
-// 다 쓴 뒤 다시 누르면 처음부터 다시 씁니다.
+// 작성 중에 누르면 일시정지/재개, 다 쓴 뒤 다시 누르면 처음부터 다시 씁니다.
 function handleStart() {
   initAudio();
   if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
   if (!typing) startTyping();
+  else togglePause();
 }
 
 screenEl.addEventListener('click', handleStart);
