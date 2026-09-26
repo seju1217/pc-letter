@@ -22,9 +22,20 @@
     if (e.key === 'Process' || e.key === 'Unidentified') return CHAR_CODE.test(e.code);
     return Array.from(e.key).length === 1; // 'a', '0', ' ', 'ㅅ' 등 (Enter·Shift·F1은 이름이 긺)
   };
+  // Android 가상 키보드는 keydown이 key 'Unidentified'(keyCode 229)·code ''로만 와서 어떤 키인지 알 수 없음
+  // → 그때만 표시해 두고, 바로 뒤 input 이벤트가 문자 삽입(insert…)일 때 소리 1회 (삭제는 기존처럼 무음)
+  // PC·iPhone은 code가 늘 있어서 이 경로를 타지 않음
+  const isUnknownVirtualKey = (e) => !e.code && (e.key === 'Unidentified' || e.key === 'Process' || e.keyCode === 229);
   [idEl, pwEl].forEach((field) => {
+    let pendingVirtualKey = false;
     field.addEventListener('keydown', (e) => {
+      pendingVirtualKey = isUnknownVirtualKey(e);
       if (isCharKey(e)) playKeySound(e.code === 'Space' ? ' ' : e.key); // 스페이스는 기존처럼 조금 낮은 소리
+    });
+    field.addEventListener('input', (e) => {
+      if (!pendingVirtualKey) return;
+      pendingVirtualKey = false;
+      if (e.inputType && e.inputType.startsWith('insert')) playKeySound(e.data && e.data.endsWith(' ') ? ' ' : e.data || '');
     });
   });
 
