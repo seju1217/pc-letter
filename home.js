@@ -7,6 +7,8 @@
     if (e.button === 0) playMouseClickSound();
   });
 
+  addPressFeedback(plazaEl);
+
   plazaEl.addEventListener('click', () => {
     console.log('OPEN_COMMUNICATION_PLAZA');
     crtSwitch(document.getElementById('home'), document.getElementById('list'));

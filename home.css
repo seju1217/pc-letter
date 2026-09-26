@@ -21,6 +21,12 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* 누르는 순간 (로그인 버튼 :active와 같은 값) */
+.home__plaza:active,
+.home__plaza.is-pressed {
+  background: rgba(0, 0, 40, 0.12);
+}
+
 .home__plaza:focus-visible {
   outline: 0.15cqw dotted #01010e;
   outline-offset: -0.6cqw;

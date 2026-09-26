@@ -10,6 +10,8 @@
     if (e.button === 0 && !touchTap) playMouseClickSound();
   });
 
+  addPressFeedback(row1El);
+
   row1El.addEventListener('click', () => {
     if (touchTap) {
       touchTap = false;
