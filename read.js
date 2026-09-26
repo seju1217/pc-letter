@@ -41,8 +41,8 @@
   const dotsStart = charIndexOf('될걸...') + 2; // 첫 '.' 위치
   const dotsEnd = dotsStart + 2;                // 마지막 '.' 위치
 
-  // 마지막 문장: '크리스마스 이브에'를 다 쓴 직후 1.5초 정지, '만날래?'는 평소 리듬에 살짝만 늦춤
-  const PAUSE_BEFORE_ASK = 1500;
+  // 마지막 문장: '크리스마스 이브에'를 다 쓴 직후 1.25초 정지, '만날래?'는 평소 리듬에 살짝만 늦춤
+  const PAUSE_BEFORE_ASK = 1250;
   // [' '→만, 만→날, 날→래, 래→?]
   const ASK_EXTRA = [0, 150, 170, 180];
   const askStart = charIndexOf('만날래?') - 1; // '만' 바로 앞 띄어쓰기 위치
