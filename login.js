@@ -29,13 +29,33 @@
   });
 
   // 비밀번호는 실제 값은 그대로 두고, 화면에는 자리수만큼 *로 표시
+  // 커서도 실제 input의 커서가 아니라 * 사이의 현재 위치에 직접 그림:
+  // iPhone Safari 등은 비밀번호 가림 문자를 자체 글꼴(더 넓은 ●)로 그려서, 투명한 원래 커서가 * 보다 오른쪽에 떨어짐
   const pwMaskEl = document.getElementById('loginPwMask');
   const syncPwMask = () => {
-    pwMaskEl.textContent = '*'.repeat(Array.from(pwEl.value).length);
-    pwMaskEl.scrollLeft = pwEl.scrollLeft; // 칸을 넘칠 만큼 길어졌을 때 스크롤도 맞춤
+    const length = Array.from(pwEl.value).length;
+    const focused = document.activeElement === pwEl;
+    const start = pwEl.selectionStart ?? length;
+    const collapsed = start === (pwEl.selectionEnd ?? length);
+
+    pwMaskEl.textContent = '*'.repeat(start);
+    if (focused && collapsed) {
+      const caret = document.createElement('span'); // 매번 새로 만들어 입력할 때마다 깜빡임이 처음부터 (실제 커서처럼)
+      caret.className = 'login__pw-caret';
+      pwMaskEl.append(caret);
+    }
+    pwMaskEl.append('*'.repeat(length - start));
+
+    // 칸을 넘칠 만큼 길어지면 커서가 보이도록 스크롤
+    const caretEl = pwMaskEl.querySelector('.login__pw-caret');
+    pwMaskEl.scrollLeft = caretEl ? Math.max(0, caretEl.offsetLeft - pwMaskEl.clientWidth + caretEl.offsetWidth * 4) : 0;
   };
-  pwEl.addEventListener('input', syncPwMask);
-  pwEl.addEventListener('scroll', syncPwMask);
+  // 커서 위치가 바뀔 수 있는 모든 순간에 다시 그림 (입력·삭제·방향키·터치로 커서 이동·포커스)
+  const syncSoon = () => requestAnimationFrame(syncPwMask);
+  ['input', 'keydown', 'keyup', 'click', 'select', 'focus', 'blur'].forEach((type) => pwEl.addEventListener(type, syncSoon));
+  document.addEventListener('selectionchange', () => {
+    if (document.activeElement === pwEl) syncSoon();
+  });
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();

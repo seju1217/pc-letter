@@ -5,7 +5,6 @@
 
 .music {
   --music-player: 200px;                      /* 정책 최소치 */
-  --music-gap: clamp(2px, 0.7vw, 10px);       /* 화면이 작을수록 모서리에 더 붙음 */
   --music-bar: 12px;
 
   --music-bezel: #0a1340;   /* 플레이어 둘레 짙은 남색 */
@@ -14,8 +13,8 @@
   --music-text: #9fb2ea;
 
   position: fixed;
-  right: var(--music-gap);
-  bottom: var(--music-gap);
+  top: 0;   /* 처음 위치: 브라우저 화면 오른쪽 위 모서리에 밀착 (끌어서 옮기면 그 자리 유지) */
+  right: 0;
   z-index: 6; /* 화면 전환 효과(5) 위, 로딩 화면(10) 아래 */
   padding: 1px;
   border: 1px solid;

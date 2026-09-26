@@ -51,6 +51,18 @@
 input.login__field--pw {
   color: transparent;
   text-shadow: none;
+  caret-color: transparent; /* 원래 커서는 숨기고 mask 안의 커서를 표시 (모바일에서 위치가 어긋나지 않게) */
+}
+
+/* * 바로 뒤에 그리는 커서: ID 칸의 실제 커서와 같은 색·두께 느낌, 글자 배치에는 영향 없음 */
+.login__pw-caret {
+  display: inline-block;
+  width: max(1px, 0.07em);
+  height: 1.1em;
+  margin-right: min(-1px, -0.07em);
+  vertical-align: middle;
+  background: #e6ecff;
+  animation: blink 1s steps(1) infinite;
 }
 
 .login__pw-mask {
