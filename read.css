@@ -1,0 +1,52 @@
+/* 편지읽기 화면 (.screen 레이아웃을 그대로 쓰고 비율만 letter-read1.png에 맞춤)
+   원본 이미지: 1558 x 1010 */
+
+.screen--read {
+  width: min(100vw, 100dvh * 1558 / 1010);
+  aspect-ratio: 1558 / 1010;
+}
+
+/* ---- 1번 편지 타이핑 (원본 좌표 → %, 글자 크기·줄 간격은 이미지 라벨에 맞춤: 글자 높이 ~42px, 줄 간격 53px) ---- */
+
+.read__line,
+.read__body {
+  position: absolute;
+  font-family: "NeoDunggeunmo", "DungGeunMo", "Gulim", monospace;
+  font-size: 2.7cqw;
+  line-height: 3.4cqw; /* 53px */
+  letter-spacing: 0.06em;
+  color: #e6ecff;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  text-rendering: optimizeSpeed;
+  text-shadow: 0 0 0.12cqw rgba(170, 200, 255, 0.35);
+  white-space: pre-wrap;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* 보낸이/수신인/날짜 값: 이미지 속 ':' 오른쪽 한 칸 뒤에서 시작 */
+.read__line {
+  left: 24.26%;   /* 378px */
+  right: 7%;      /* 목록 안쪽 오른쪽 끝(1449px) 부근 */
+  height: 5.25%;  /* 53px */
+  display: flex;
+  align-items: center;
+  white-space: pre;
+}
+
+.read__line--from { top: 20.79%; }  /* 라벨 글자 중심 y 236 */
+.read__line--to   { top: 25.99%; }  /* y 289 */
+.read__line--date { top: 31.34%; }  /* y 343 */
+
+/* 본문: 날짜 바로 다음 줄부터, 라벨과 같은 왼쪽 선 */
+.read__body {
+  left: 9.05%;    /* 141px */
+  top: 36.58%;    /* 369px */
+  width: 83.95%;  /* 1308px */
+  height: 41.63%; /* 790px까지 */
+  padding-top: 0.6cqw;
+  font-size: 2.6cqw;   /* 본문만 라벨 줄(2.7cqw)보다 약 1pt 작게 */
+  line-height: 3.2cqw; /* 본문 8줄이 넘치지 않도록 라벨 줄 간격보다 살짝 좁게 (~50px) */
+  overflow: hidden;
+}

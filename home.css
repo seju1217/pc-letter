@@ -1,0 +1,27 @@
+/* 초기화면 (.screen 레이아웃을 그대로 쓰고 비율만 home.png에 맞춤)
+   원본 이미지: 1651 x 953 — 아래 % 값은 이 좌표에서 계산 */
+
+.screen--home {
+  width: min(100vw, 100dvh * 1651 / 953);
+  aspect-ratio: 1651 / 953;
+}
+
+/* 통신광장 버튼 위 투명 클릭 영역 */
+.home__plaza {
+  position: absolute;
+  left: 49.49%;   /* 817px */
+  top: 36.62%;    /* 349px */
+  width: 18.53%;  /* 306px */
+  height: 23.92%; /* 228px */
+  border: 0;
+  border-radius: 1.2cqw;
+  background: transparent;
+  color: transparent;
+  font-size: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home__plaza:focus-visible {
+  outline: 0.15cqw dotted #01010e;
+  outline-offset: -0.6cqw;
+}

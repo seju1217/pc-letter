@@ -1,0 +1,33 @@
+/* 화면 전환: 90년대 CRT가 화면을 다시 그리는 짧은 효과 (약 220ms)
+   잠깐 어두워짐 → 밝은 가로줄이 위에서 아래로 훑으며 다음 화면이 드러남 */
+
+.crt-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 5; /* 로딩 화면(10)보다 아래 */
+  pointer-events: none;
+  background: #00001c;
+  border-top: 2px solid #eef3ff;
+  box-shadow: 0 -2px 6px rgba(190, 210, 255, 0.7);
+  opacity: 0;
+  animation: crt-wipe 220ms linear forwards;
+}
+
+/* 어두운 면 위의 스캔라인 (loader와 같은 결) */
+.crt-wipe::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 2px,
+    rgba(0, 0, 0, 0.35) 2px 3px
+  );
+}
+
+/* 0~25%: 어두워짐, 25%에 화면 교체, 25~100%: 가로줄이 내려가며 새 화면 노출 */
+@keyframes crt-wipe {
+  0%   { opacity: 0; transform: translateY(0); }
+  25%  { opacity: 0.92; transform: translateY(0); }
+  100% { opacity: 0.92; transform: translateY(100%); }
+}

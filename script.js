@@ -14,9 +14,10 @@ const TYPING_JITTER = 70;       // 글자마다 더해지는 랜덤 편차
 const PAUSE_PUNCTUATION = 350;  // , . ! ? 뒤 추가 대기
 const PAUSE_NEWLINE = 550;      // 줄바꿈 뒤 추가 대기
 const SOUND_VOLUME = 0.35;      // 0 ~ 1
+const MOUSE_CLICK_VOLUME = 0.2; // 화면 버튼 클릭음, 0 ~ 1
 // ==========================================
 
-const screenEl = document.querySelector('.screen');
+const screenEl = document.getElementById('message').closest('.screen'); // 쪽지 화면 (로그인 form도 .screen이라 구분)
 const messageEl = document.getElementById('message');
 const textEl = document.getElementById('messageText');
 const hintEl = document.getElementById('hint');
@@ -165,6 +166,20 @@ function playKeyLayers(char) {
   noiseHit({ when: now + rand(0.055, 0.075), type: 'bandpass', freq: 4000 * pitch, q: 1.5, gain: level * 0.4, decay: 0.008 });
 }
 
+// 화면 버튼용 구형 마우스 '딸깍': 키 소리와 달리 몸통·되돌림 없이 짧은 두 번의 틱만
+function playMouseClickSound() {
+  if (!audioCtx || !noiseBuffer) return;
+  if (audioCtx.state !== 'running') resumeAudio();
+  try {
+    const now = audioCtx.currentTime;
+    const level = MOUSE_CLICK_VOLUME * rand(0.94, 1);
+    // '딸': 스위치 접점이 튀는 날카로운 틱
+    noiseHit({ when: now, type: 'bandpass', freq: 4200 * rand(0.97, 1.03), q: 4, gain: level * 6, decay: 0.004 });
+    // '깍': 곧바로 이어지는 조금 낮고 단단한 플라스틱 틱
+    noiseHit({ when: now + 0.003, type: 'bandpass', freq: 2100 * rand(0.97, 1.03), q: 5, gain: level * 4, decay: 0.006 });
+  } catch (e) {}
+}
+
 function delayAfter(char) {
   let delay = TYPING_SPEED + Math.random() * TYPING_JITTER;
   if (char === '\n') delay += PAUSE_NEWLINE;
@@ -218,6 +233,7 @@ function handleStart() {
 
 screenEl.addEventListener('click', handleStart);
 document.addEventListener('keydown', (e) => {
+  if (screenEl.hidden) return; // 쪽지 화면이 보일 때만 (로그인 입력칸의 Enter·스페이스를 막지 않도록)
   if (e.key === 'Enter' || e.key === ' ') {
     e.preventDefault();
     handleStart();

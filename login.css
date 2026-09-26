@@ -1,0 +1,111 @@
+/* 로그인 화면 (.screen 레이아웃을 그대로 쓰고 비율만 login.png에 맞춤)
+   원본 이미지: 1536 x 1024 — 아래 % 값은 이 좌표에서 계산 */
+
+.screen--login {
+  width: min(100vw, 100dvh * 1536 / 1024);
+  aspect-ratio: 1536 / 1024;
+}
+
+.login__field,
+.login__button,
+.login__error {
+  position: absolute;
+  font-family: "NeoDunggeunmo", "DungGeunMo", "Gulim", monospace;
+  font-size: 2cqw;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+}
+
+/* 이미지에 그려진 입력 박스 안쪽에 딱 맞게, 배경·테두리 없이 */
+.login__field {
+  left: 31.77%;   /* 488px */
+  width: 19.92%;  /* 306px */
+  padding: 0 0.45cqw;
+  border: 0;
+  outline: none;
+  border-radius: 0;
+  background: transparent;
+  font-family: "NeoDunggeunmo", "DungGeunMo", monospace;
+  /* 이미지 속 글씨처럼 짙은 먹색 + 아주 약한 번짐 */
+  color: #101936;
+  text-shadow: 0 0 0.1cqw rgba(16, 25, 54, 0.45);
+  caret-color: #e6ecff;
+  letter-spacing: 0.06em;
+  -webkit-appearance: none;
+  appearance: none;
+  user-select: text;
+}
+
+.login__field--id {
+  top: 54.59%;    /* 559px */
+  height: 5.08%;  /* 52px */
+}
+
+.login__field--pw {
+  top: 61.13%;    /* 626px */
+  height: 5.18%;  /* 53px */
+}
+
+/* 비밀번호: 브라우저 기본 ●는 숨기고, 같은 자리에 겹친 mask가 *로 표시
+   (Neo둥근모에서 ●와 *의 폭이 같아 커서 위치가 그대로 맞음) */
+input.login__field--pw {
+  color: transparent;
+  text-shadow: none;
+}
+
+.login__pw-mask {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: pre;
+  pointer-events: none;
+}
+
+/* 이미지에 그려진 정지 커서를 가리는 패치 */
+.login__cursor-patch {
+  position: absolute;
+  left: 32.16%;   /* 494px */
+  top: 54.88%;    /* 562px */
+  width: 0.52%;   /* 8px */
+  height: 4.49%;  /* 46px */
+  background: rgb(63, 121, 251);
+  pointer-events: none;
+}
+
+/* [ 로그인 ] 버튼 클릭 영역 */
+.login__button {
+  left: 13.8%;    /* 212px */
+  top: 75.2%;     /* 770px */
+  width: 21.74%;  /* 334px */
+  height: 8.11%;  /* 83px */
+  border: 0;
+  background: transparent;
+  color: transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.login__button:active {
+  background: rgba(0, 0, 40, 0.12);
+}
+
+.login__button:focus-visible {
+  outline: 0.15cqw dotted #01010e;
+  outline-offset: -0.6cqw;
+}
+
+/* 입력칸 오른쪽 빈 공간에 한 줄로 */
+.login__error {
+  left: 53.39%;   /* 820px */
+  top: 54.59%;    /* 559px */
+  width: 32.55%;  /* 500px */
+  height: 11.72%; /* 120px */
+  display: flex;
+  align-items: center;
+  color: #01010e;
+  letter-spacing: 0.06em;
+  animation: blink 1s steps(1) 3;
+}
+
+.login__error[hidden] {
+  display: none;
+}

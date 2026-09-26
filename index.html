@@ -3,9 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>새 쪽지 (1)</title>
+  <title>[PC통신] 천리연</title>
+  <link rel="preload" href="assets/cursors/arrow.svg" as="image" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="loader.css">
+  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="list.css">
+  <link rel="stylesheet" href="read.css">
+  <link rel="stylesheet" href="transition.css">
+  <link rel="stylesheet" href="music.css">
 </head>
 <body>
   <!-- 최초 진입 시 PC통신 접속 로딩 화면 -->
@@ -19,7 +26,42 @@
     <div class="loader__flash" aria-hidden="true"></div>
   </div>
 
-  <main class="screen" aria-label="PC통신 쪽지 화면">
+  <!-- 로딩 화면이 끝나면 보이는 로그인 화면 -->
+  <form class="screen screen--login" id="login" aria-label="PC통신 로그인 화면" autocomplete="off" novalidate>
+    <img class="screen__bg" src="assets/login.png" alt="UNIFIED 로그인 창" draggable="false">
+    <div class="login__cursor-patch" aria-hidden="true"></div>
+    <input class="login__field login__field--id" id="loginId" type="text" aria-label="이용자 ID" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+    <input class="login__field login__field--pw" id="loginPw" type="password" aria-label="비밀번호" autocomplete="off">
+    <div class="login__field login__field--pw login__pw-mask" id="loginPwMask" aria-hidden="true"></div>
+    <button class="login__button" type="submit">로그인</button>
+    <p class="login__error" id="loginError" role="alert" hidden>ID 또는 비밀번호가 틀렸습니다</p>
+  </form>
+
+  <!-- 로그인 성공 후 초기화면 -->
+  <main class="screen screen--home" id="home" aria-label="PC통신 초기화면" hidden>
+    <img class="screen__bg" src="assets/home.png" alt="초기메뉴(TOP) 화면" draggable="false">
+    <button class="home__plaza" id="homePlaza" type="button">통신광장</button>
+  </main>
+
+  <!-- 통신광장 → 편지목록 -->
+  <main class="screen screen--list" id="list" aria-label="편지목록 화면" hidden>
+    <img class="screen__bg" src="assets/letter-list.png" alt="편지목록. 1번 편지, 보낸이 이세영, 09/24, 제목 서재혁 씨에게" draggable="false">
+    <button class="list__row1" id="listRow1" type="button">1번 편지: 이세영, 서재혁 씨에게</button>
+  </main>
+
+  <!-- 1번 편지 → 편지읽기 -->
+  <main class="screen screen--read" id="read" aria-label="편지읽기 화면" hidden>
+    <img class="screen__bg" src="assets/letter-read1.png" alt="편지읽기 창" draggable="false">
+
+    <!-- 이미지의 보낸이/수신인/날짜 라벨 오른쪽과 본문 영역에 얹는 텍스트 -->
+    <div class="read__line read__line--from" aria-label="보낸이"><span id="readFrom"></span><span class="message__cursor" id="readCursor" aria-hidden="true"></span></div>
+    <div class="read__line read__line--to" aria-label="수신인"><span id="readTo"></span></div>
+    <div class="read__line read__line--date" aria-label="날짜"><span id="readDate"></span></div>
+    <div class="read__body" id="readBody" aria-live="polite"><span id="readBodyText"></span></div>
+  </main>
+
+  <!-- 쪽지 화면 (다음 단계에서 연결, 지금은 숨김) -->
+  <main class="screen" aria-label="PC통신 쪽지 화면" hidden>
     <img class="screen__bg" src="assets/background.png" alt="쪽지보내기 창. 수신인 ID 서재혁" draggable="false">
 
     <!-- 이미지에 그려진 정지 커서를 가리는 패치 -->
@@ -32,7 +74,19 @@
     </div>
   </main>
 
+  <!-- 배경음악 창 (로그인 화면이 나타날 때 표시, 모든 화면에서 계속 재생) -->
+  <div class="music" id="music" role="region" aria-label="배경음악" hidden>
+    <div class="music__titlebar" id="musicTitle"><span class="music__icon" aria-hidden="true">♪</span><span class="music__title">Pale Blue Eyes</span><span class="music__status" id="musicStatus" aria-live="polite"></span></div>
+    <div class="music__player"><div id="musicPlayer"></div></div>
+  </div>
+
   <script src="loader.js"></script>
+  <script src="transition.js"></script>
+  <script src="login.js"></script>
+  <script src="home.js"></script>
+  <script src="list.js"></script>
   <script src="script.js"></script>
+  <script src="read.js"></script>
+  <script src="music.js"></script>
 </body>
 </html>

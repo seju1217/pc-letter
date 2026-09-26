@@ -1,0 +1,26 @@
+/* 편지목록 화면 (.screen 레이아웃을 그대로 쓰고 비율만 letter-list.png에 맞춤)
+   원본 이미지: 1673 x 940 */
+
+.screen--list {
+  width: min(100vw, 100dvh * 1673 / 940);
+  aspect-ratio: 1673 / 940;
+}
+
+/* 번호 1 편지 행 위 투명 클릭 영역 (원본 x 85–1537, y 155–197: 목록 안쪽 ~ 첫 점선 전, 스크롤바 제외) */
+.list__row1 {
+  position: absolute;
+  left: 5.08%;    /* 85px */
+  top: 16.49%;    /* 155px */
+  width: 86.79%;  /* 1452px */
+  height: 4.47%;  /* 42px */
+  border: 0;
+  background: transparent;
+  color: transparent;
+  font-size: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.list__row1:focus-visible {
+  outline: 0.15cqw dotted #e6ecff;
+  outline-offset: -0.3cqw;
+}

@@ -1,0 +1,90 @@
+/* 배경음악 창: CRT 화면 구석에 박힌 작은 서브 모니터 느낌의 90년대 미디어 플레이어
+   YouTube 정책상 플레이어는 200x200px 이상이어야 하고, 그 위에 무엇을 겹치거나 필터를 걸면 안 되므로
+   플레이어는 그대로 두고, 창틀·제목 표시줄만 최대한 얇게 + 어두운 청색 CRT 톤으로 맞춤
+   (플레이어 안의 검은 화면과 밝은 PC통신 청색 사이를 짙은 남색 베젤이 이어 주도록) */
+
+.music {
+  --music-player: 200px;                      /* 정책 최소치 */
+  --music-gap: clamp(2px, 0.7vw, 10px);       /* 화면이 작을수록 모서리에 더 붙음 */
+  --music-bar: 12px;
+
+  --music-bezel: #0a1340;   /* 플레이어 둘레 짙은 남색 */
+  --music-edge: #3552b8;    /* 바깥 테두리: PC통신 화면의 청색 */
+  --music-edge-dim: #1b2a6e;
+  --music-text: #9fb2ea;
+
+  position: fixed;
+  right: var(--music-gap);
+  bottom: var(--music-gap);
+  z-index: 6; /* 화면 전환 효과(5) 위, 로딩 화면(10) 아래 */
+  padding: 1px;
+  border: 1px solid;
+  border-color: var(--music-edge) var(--music-edge-dim) var(--music-edge-dim) var(--music-edge);
+  background: var(--music-bezel);
+  /* 주변 청색 화면으로 번지는 빛 + 안쪽의 어두운 그림자로 화면에 박힌 느낌 */
+  box-shadow:
+    0 0 8px rgba(40, 80, 220, 0.45),
+    0 0 1px rgba(0, 0, 20, 0.8);
+  font-family: "NeoDunggeunmo", "DungGeunMo", "Gulim", monospace;
+  font-size: 10px;
+  line-height: var(--music-bar);
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  user-select: none;
+}
+
+.music[hidden] {
+  display: none;
+}
+
+/* 제목 표시줄: 곡 제목 + 오른쪽에 재생 상태 (별도 상태 표시줄 없이 한 줄) */
+.music__titlebar {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: var(--music-bar);
+  padding: 0 3px;
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 20, 0.3) 2px 3px),
+    linear-gradient(90deg, #15247a, #0d1850);
+  color: var(--music-text);
+  text-shadow: 0 0 2px rgba(120, 150, 255, 0.5); /* 아주 약한 번짐 */
+  white-space: nowrap;
+  touch-action: none; /* 모바일에서 끌 때 화면이 스크롤되지 않게 */
+}
+
+.music__icon {
+  flex: none;
+}
+
+.music__title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.music__status {
+  flex: none;
+  color: #7f93cf;
+}
+
+/* 플레이어 칸: 여백 없이 1px 안쪽 테두리만 */
+.music__player {
+  margin-top: 1px;
+  border: 1px solid;
+  border-color: #050a24 var(--music-edge-dim) var(--music-edge-dim) #050a24;
+  background: #050a24;
+  line-height: 0;
+  /* 플레이어를 불러오기 전에도 창 크기가 바뀌지 않게 */
+  width: calc(var(--music-player) + 2px);
+  height: calc(var(--music-player) + 2px);
+}
+
+/* 플레이어 자체는 크기만 지정 (필터·겹침 없음) */
+.music__player iframe {
+  display: block;
+  width: var(--music-player);
+  height: var(--music-player);
+  border: 0;
+}
