@@ -41,9 +41,10 @@
   const dotsStart = charIndexOf('될걸...') + 2; // 첫 '.' 위치
   const dotsEnd = dotsStart + 2;                // 마지막 '.' 위치
 
-  // 마지막 문장: '이브에 ' 뒤 0.3초 텀, '만날래?'는 평소 리듬에 살짝만 늦춤 (합계 약 +0.5초)
+  // 마지막 문장: '크리스마스 이브에'를 다 쓴 직후 1.5초 정지, '만날래?'는 평소 리듬에 살짝만 늦춤
+  const PAUSE_BEFORE_ASK = 1500;
   // [' '→만, 만→날, 날→래, 래→?]
-  const ASK_EXTRA = [300, 150, 170, 180];
+  const ASK_EXTRA = [0, 150, 170, 180];
   const askStart = charIndexOf('만날래?') - 1; // '만' 바로 앞 띄어쓰기 위치
 
   let typing = false;
@@ -81,6 +82,7 @@
     let delay = delayAfter(char);
     // '걸' 다음부터 마지막 '.' 다음(Enter 전)까지: 점 하나하나 천천히
     if (isBody && index >= dotsStart - 1 && index <= dotsEnd) delay = DOT_DELAY;
+    if (isBody && index === askStart - 1) delay = PAUSE_BEFORE_ASK; // '에' 다음
     if (isBody && index >= askStart && index < askStart + ASK_EXTRA.length) delay += ASK_EXTRA[index - askStart];
     timer = setTimeout(typeNext, delay);
   }
