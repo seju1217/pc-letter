@@ -23,19 +23,25 @@
     return Array.from(e.key).length === 1; // 'a', '0', ' ', 'ㅅ' 등 (Enter·Shift·F1은 이름이 긺)
   };
   // Android 가상 키보드는 keydown이 key 'Unidentified'(keyCode 229)·code ''로만 와서 어떤 키인지 알 수 없음
-  // → 그때만 표시해 두고, 바로 뒤 input 이벤트가 문자 삽입(insert…)일 때 소리 1회 (삭제는 기존처럼 무음)
+  // → 그때만 표시해 두고, 바로 뒤 input 이벤트가 문자 삽입(insert…)일 때 소리 1회
   // PC·iPhone은 code가 늘 있어서 이 경로를 타지 않음
+  // Backspace는 실제로 지워져 값이 바뀐 input 이벤트에서만 소리 1회 (빈 칸에서 누르면 input이 안 와서 무음)
+  // PC·iPhone은 keydown의 Backspace로, Android는 inputType 'deleteContentBackward'로 알아냄 (한글 조합 중 지우기도 포함)
   const isUnknownVirtualKey = (e) => !e.code && (e.key === 'Unidentified' || e.key === 'Process' || e.keyCode === 229);
   [idEl, pwEl].forEach((field) => {
     let pendingVirtualKey = false;
+    let pendingBackspace = false;
     field.addEventListener('keydown', (e) => {
       pendingVirtualKey = isUnknownVirtualKey(e);
+      pendingBackspace = e.key === 'Backspace' || e.code === 'Backspace';
       if (isCharKey(e)) playKeySound(e.code === 'Space' ? ' ' : e.key); // 스페이스는 기존처럼 조금 낮은 소리
     });
     field.addEventListener('input', (e) => {
-      if (!pendingVirtualKey) return;
-      pendingVirtualKey = false;
-      if (e.inputType && e.inputType.startsWith('insert')) playKeySound(e.data && e.data.endsWith(' ') ? ' ' : e.data || '');
+      const byBackspace = pendingBackspace || e.inputType === 'deleteContentBackward';
+      const byVirtualKey = pendingVirtualKey;
+      pendingVirtualKey = pendingBackspace = false;
+      if (byBackspace) playKeySound('');
+      else if (byVirtualKey && e.inputType && e.inputType.startsWith('insert')) playKeySound(e.data && e.data.endsWith(' ') ? ' ' : e.data || '');
     });
   });
 
