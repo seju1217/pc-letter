@@ -109,11 +109,28 @@
     else togglePause();
   }
 
-  readEl.addEventListener('click', handleStart);
+  // 타이핑을 시작하는 클릭/탭: 마우스 클릭음 1회 즉시 → 1.6초 뒤 시작 (대기 중 추가 클릭은 무시)
+  // startTyping()의 0.4초 대기와 합쳐 클릭음 후 약 2초에 첫 글자
+  const START_DELAY = 1600;
+  let startPending = false;
+  readEl.addEventListener('click', () => {
+    if (startPending) return;
+    if (typing) {
+      handleStart();
+      return;
+    }
+    playMouseClickSound();
+    startPending = true;
+    setTimeout(() => {
+      startPending = false;
+      handleStart();
+    }, START_DELAY);
+  });
   document.addEventListener('keydown', (e) => {
     if (readEl.hidden) return; // 편지읽기 화면이 보일 때만
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
+      if (startPending) return; // 클릭 후 대기 중이면 중복 시작 방지
       handleStart();
     }
   });
