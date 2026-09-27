@@ -194,6 +194,8 @@
       touchTap = e.pointerType !== 'mouse';
       if (e.button === 0 && !touchTap && !leaving && canLeave()) playMouseClickSound();
     });
+    addPressFeedback(backEl);
+
     new MutationObserver(() => {
       if (screenEl.hidden) leaving = false;
     }).observe(screenEl, { attributes: true, attributeFilter: ['hidden'] });
