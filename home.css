@@ -31,3 +31,46 @@
   outline: 0.15cqw dotted #01010e;
   outline-offset: -0.6cqw;
 }
+
+/* 엔터테인먼트 버튼 위 투명 클릭 영역 (원본 x 808–1136, y 742–836) */
+.home__entertainment {
+  position: absolute;
+  left: 48.94%;   /* 808px */
+  top: 77.86%;    /* 742px */
+  width: 19.87%;  /* 328px */
+  height: 9.86%;  /* 94px */
+  border: 0;
+  border-radius: 3cqw;
+  background: transparent;
+  color: transparent;
+  font-size: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home__entertainment:active,
+.home__entertainment.is-pressed {
+  background: rgba(0, 0, 40, 0.12);
+}
+
+.home__entertainment:focus-visible {
+  outline: 0.15cqw dotted #01010e;
+  outline-offset: -0.6cqw;
+}
+
+/* 엔터테인먼트 버튼의 CRT 오류 깜빡임: 글자+아이콘만 밝게 뽑아 둔 조각(home-entertainment-glitch.png)을
+   잠깐 1px 옆에 겹쳐 보였다가 바로 숨김 (원본 x 816–1131, y 742–835). 버튼 배경·테두리는 그대로 */
+.home__entertainment-glitch {
+  position: absolute;
+  left: 49.42%;   /* 816px */
+  top: 77.86%;    /* 742px */
+  width: 19.14%;  /* 316px */
+  height: 9.86%;  /* 94px */
+  background: url("assets/home-entertainment-glitch.png") 0 0 / 100% 100% no-repeat;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.home__entertainment-glitch.is-glitching {
+  visibility: visible;
+  transform: translateX(1px);
+}

@@ -22,11 +22,13 @@ function addPressFeedback(el) {
 }
 
 // 브라우저 history에 기록하는 앱 화면 (id)
-const APP_SCREEN_IDS = ['login', 'home', 'list', 'read'];
+const APP_SCREEN_IDS = ['login', 'home', 'list', 'read', 'entertainment',
+  'entertainmentRead1', 'entertainmentRead2', 'entertainmentRead3', 'entertainmentRead4'];
 let currentScreenId = 'login';
 
 // record: false면 history에 기록하지 않음 (뒤로가기로 되돌아갈 때)
-function crtSwitch(fromEl, toEl, record = true) {
+// useWipe: false면 CRT 효과 없이 바로 교체 (엔터테인먼트 게시글: 로딩창이 대신 연출)
+function crtSwitch(fromEl, toEl, record = true, useWipe = true) {
   if (record && APP_SCREEN_IDS.includes(toEl.id)) history.pushState({ screen: toEl.id }, '');
   if (APP_SCREEN_IDS.includes(toEl.id)) currentScreenId = toEl.id;
 
@@ -35,7 +37,7 @@ function crtSwitch(fromEl, toEl, record = true) {
     toEl.hidden = false;
   };
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (!useWipe || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     swap();
     return;
   }

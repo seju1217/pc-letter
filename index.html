@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="home.css">
   <link rel="stylesheet" href="list.css">
   <link rel="stylesheet" href="read.css">
+  <link rel="stylesheet" href="entertainment.css">
   <link rel="stylesheet" href="transition.css">
   <link rel="stylesheet" href="music.css">
 </head>
@@ -41,12 +42,41 @@
   <main class="screen screen--home" id="home" aria-label="PC통신 초기화면" hidden>
     <img class="screen__bg" src="assets/home.png" alt="초기메뉴(TOP) 화면" draggable="false">
     <button class="home__plaza" id="homePlaza" type="button">통신광장</button>
+    <div class="home__entertainment-glitch" id="homeEntertainmentGlitch" aria-hidden="true"></div>
+    <button class="home__entertainment" id="homeEntertainment" type="button">엔터테인먼트</button>
   </main>
 
   <!-- 통신광장 → 편지목록 -->
   <main class="screen screen--list" id="list" aria-label="편지목록 화면" hidden>
     <img class="screen__bg" src="assets/letter-list.png" alt="편지목록. 1번 편지, 보낸이 이세영, 09/24, 제목 서재혁 씨에게" draggable="false">
     <button class="list__row1" id="listRow1" type="button">1번 편지: 이세영, 서재혁 씨에게</button>
+  </main>
+
+  <!-- 초기화면 엔터테인먼트 → 글목록 -->
+  <main class="screen screen--entertainment" id="entertainment" aria-label="엔터테인먼트 글목록 화면" hidden>
+    <img class="screen__bg" src="assets/entertainment-list.png" alt="엔터테인먼트 글제목 목록. 1 원조세원 강세원 05/29 운명이라고 믿고 싶어질 때..., 2 짱세주 김세주 06/16 사랑이 원래 이렇게 힘든 건가요?, 3 짱세주 김세주 06/24 우리가 한 번만 더 해보면..., 4 원조세원 강세원 07/18 기적은 기다려준다는 것" draggable="false">
+    <button class="entertainment__row entertainment__row--1" type="button" data-post="1">1번 글: 강세원, 운명이라고 믿고 싶어질 때...</button>
+    <button class="entertainment__row entertainment__row--2" type="button" data-post="2">2번 글: 김세주, 사랑이 원래 이렇게 힘든 건가요?</button>
+    <button class="entertainment__row entertainment__row--3" type="button" data-post="3">3번 글: 김세주, 우리가 한 번만 더 해보면...</button>
+    <button class="entertainment__row entertainment__row--4" type="button" data-post="4">4번 글: 강세원, 기적은 기다려준다는 것</button>
+  </main>
+
+  <!-- 엔터테인먼트 글목록 1~4번 → 게시글 읽기 -->
+  <main class="screen screen--entertainment-read" id="entertainmentRead1" aria-label="엔터테인먼트 1번 글 읽기 화면" hidden>
+    <img class="screen__bg" src="assets/entertainment-read1.png" alt="1번 글: 운명이라고 믿고 싶어질 때..." draggable="false">
+    <iframe class="entertainment-read__video" id="entertainmentRead1Video" src="https://www.youtube.com/embed/tYLKZY7xAd4?start=629&amp;autoplay=0&amp;enablejsapi=1" title="1번 글 영상" allow="encrypted-media; picture-in-picture; fullscreen"></iframe>
+  </main>
+  <main class="screen screen--entertainment-read" id="entertainmentRead2" aria-label="엔터테인먼트 2번 글 읽기 화면" hidden>
+    <img class="screen__bg" src="assets/entertainment-read2.png" alt="2번 글: 사랑이 원래 이렇게 힘든 건가요?" draggable="false">
+    <iframe class="entertainment-read__video" id="entertainmentRead2Video" src="https://www.youtube.com/embed/dGIGG6QLjLg?autoplay=0&amp;enablejsapi=1" title="2번 글 영상" allow="encrypted-media; picture-in-picture; fullscreen"></iframe>
+  </main>
+  <main class="screen screen--entertainment-read" id="entertainmentRead3" aria-label="엔터테인먼트 3번 글 읽기 화면" hidden>
+    <img class="screen__bg" src="assets/entertainment-read3.png" alt="3번 글: 우리가 한 번만 더 해보면..." draggable="false">
+    <iframe class="entertainment-read__video" id="entertainmentRead3Video" src="https://www.youtube.com/embed/GCvQfMB1eT8?autoplay=0&amp;enablejsapi=1" title="3번 글 영상" allow="encrypted-media; picture-in-picture; fullscreen"></iframe>
+  </main>
+  <main class="screen screen--entertainment-read" id="entertainmentRead4" aria-label="엔터테인먼트 4번 글 읽기 화면" hidden>
+    <img class="screen__bg" src="assets/entertainment-read4.png" alt="4번 글: 기적은 기다려준다는 것" draggable="false">
+    <iframe class="entertainment-read__video" id="entertainmentRead4Video" src="https://www.youtube.com/embed/XFPFoxYMAs0?autoplay=0&amp;enablejsapi=1" title="4번 글 영상" allow="encrypted-media; picture-in-picture; fullscreen"></iframe>
   </main>
 
   <!-- 1번 편지 → 편지읽기 -->
@@ -85,6 +115,7 @@
   <script src="login.js"></script>
   <script src="home.js"></script>
   <script src="list.js"></script>
+  <script src="entertainment.js"></script>
   <script src="script.js"></script>
   <script src="read.js"></script>
   <script src="music.js"></script>
