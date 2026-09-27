@@ -184,8 +184,27 @@
 (() => {
   document.querySelectorAll('.entertainment-read__back').forEach((backEl) => {
     const screenEl = backEl.closest('.screen');
+    const canLeave = () => !screenEl.hidden && currentScreenId === screenEl.id;
+
+    // 누르는 순간 마우스 클릭음 1회 (글목록 행과 같은 방식: 터치는 click에서 재생)
+    // leaving: 한 번 누른 뒤로는 화면이 바뀔 때까지 소리·뒤로가기 모두 무시 (연타 중복 방지)
+    let leaving = false;
+    let touchTap = false;
+    backEl.addEventListener('pointerdown', (e) => {
+      touchTap = e.pointerType !== 'mouse';
+      if (e.button === 0 && !touchTap && !leaving && canLeave()) playMouseClickSound();
+    });
+    new MutationObserver(() => {
+      if (screenEl.hidden) leaving = false;
+    }).observe(screenEl, { attributes: true, attributeFilter: ['hidden'] });
+
     backEl.addEventListener('click', () => {
-      if (screenEl.hidden || currentScreenId !== screenEl.id) return; // 연타로 두 번 뒤로 가지 않도록
+      if (leaving || !canLeave()) return; // 연타로 두 번 뒤로 가지 않도록
+      leaving = true;
+      if (touchTap) {
+        touchTap = false;
+        playMouseClickSound();
+      }
       console.log(`BACK_TO_ENTERTAINMENT_LIST_FROM_${screenEl.id}`);
       history.back();
     });
