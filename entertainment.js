@@ -177,3 +177,17 @@
     videoEl.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), 'https://www.youtube.com');
   }).observe(screenEl, { attributes: true, attributeFilter: ['hidden'] });
 })();
+
+// 게시글 읽기 화면 '뒤로' 버튼 → 글목록
+// 브라우저 뒤로가기·Backspace와 같은 경로(history.back → popstate → crtSwitch)를 써서 history가 꼬이지 않게 함
+// 영상 일시정지는 화면이 숨겨질 때 위의 각 글 영상 코드가 처리
+(() => {
+  document.querySelectorAll('.entertainment-read__back').forEach((backEl) => {
+    const screenEl = backEl.closest('.screen');
+    backEl.addEventListener('click', () => {
+      if (screenEl.hidden || currentScreenId !== screenEl.id) return; // 연타로 두 번 뒤로 가지 않도록
+      console.log(`BACK_TO_ENTERTAINMENT_LIST_FROM_${screenEl.id}`);
+      history.back();
+    });
+  });
+})();
