@@ -63,6 +63,7 @@
     if (charIndex >= part.chars.length) {
       if (partIndex === parts.length - 1) {
         typing = false;
+        readEl.dataset.typingDone = 'true'; // 다 쓴 뒤에만 Backspace 뒤로가기 허용 (transition.js)
         return;
       }
       partIndex++;
@@ -94,6 +95,7 @@
     charIndex = 0;
     paused = false;
     typing = true;
+    delete readEl.dataset.typingDone;
     moveCursorTo(parts[0]);
     timer = setTimeout(typeNext, 400);
   }
@@ -115,6 +117,7 @@
   // startTyping()의 0.4초 대기와 합쳐 클릭음 후 약 2초에 첫 글자
   const START_DELAY = 1600;
   let startPending = false;
+  let startTimer = null;
   readEl.addEventListener('click', () => {
     if (startPending) return;
     if (typing) {
@@ -123,11 +126,21 @@
     }
     playMouseClickSound();
     startPending = true;
-    setTimeout(() => {
+    startTimer = setTimeout(() => {
       startPending = false;
       handleStart();
     }, START_DELAY);
   });
+  // 브라우저 뒤로가기로 화면을 떠나면: 시작 대기는 취소, 작성 중이면 그 자리에서 일시정지 (다시 오면 클릭으로 이어서)
+  new MutationObserver(() => {
+    if (!readEl.hidden) return;
+    if (startPending) {
+      clearTimeout(startTimer);
+      startPending = false;
+    }
+    if (typing && !paused) togglePause();
+  }).observe(readEl, { attributes: true, attributeFilter: ['hidden'] });
+
   document.addEventListener('keydown', (e) => {
     if (readEl.hidden) return; // 편지읽기 화면이 보일 때만
     if (e.key === 'Enter' || e.key === ' ') {

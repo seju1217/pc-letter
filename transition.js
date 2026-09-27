@@ -21,7 +21,15 @@ function addPressFeedback(el) {
   el.addEventListener('pointercancel', release);
 }
 
-function crtSwitch(fromEl, toEl) {
+// 브라우저 history에 기록하는 앱 화면 (id)
+const APP_SCREEN_IDS = ['login', 'home', 'list', 'read'];
+let currentScreenId = 'login';
+
+// record: false면 history에 기록하지 않음 (뒤로가기로 되돌아갈 때)
+function crtSwitch(fromEl, toEl, record = true) {
+  if (record && APP_SCREEN_IDS.includes(toEl.id)) history.pushState({ screen: toEl.id }, '');
+  if (APP_SCREEN_IDS.includes(toEl.id)) currentScreenId = toEl.id;
+
   const swap = () => {
     fromEl.hidden = true;
     toEl.hidden = false;
@@ -40,3 +48,25 @@ function crtSwitch(fromEl, toEl) {
   setTimeout(swap, CRT_SWAP_AT);
   setTimeout(() => wipe.remove(), CRT_WIPE_TIME + 30);
 }
+
+// 브라우저 뒤로가기(←)·Backspace로 직전 앱 화면으로
+// 화면을 바꿀 때마다 crtSwitch가 history에 기록(pushState)하고, popstate에서는 기록 없이 되돌림 (새로고침 없음)
+history.replaceState({ screen: currentScreenId }, '');
+
+window.addEventListener('popstate', (e) => {
+  const targetId = e.state && e.state.screen;
+  if (!APP_SCREEN_IDS.includes(targetId) || targetId === currentScreenId) return;
+  if (document.activeElement) document.activeElement.blur(); // 숨겨질 입력칸에 커서가 남지 않도록
+  crtSwitch(document.getElementById(currentScreenId), document.getElementById(targetId), false);
+});
+
+// PC Backspace: 입력칸에서는 기존처럼 글자 삭제만, 편지읽기는 타이핑이 다 끝난 뒤에만
+const isTextInput = (el) => el && (el.matches('input, textarea') || el.isContentEditable);
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Backspace' || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (isTextInput(document.activeElement)) return;
+  if (currentScreenId === 'login') return; // 첫 화면: 더 돌아갈 앱 화면 없음
+  if (currentScreenId === 'read' && document.getElementById('read').dataset.typingDone !== 'true') return;
+  e.preventDefault();
+  history.back();
+});
