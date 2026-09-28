@@ -30,38 +30,3 @@
     crtSwitch(document.getElementById('home'), document.getElementById('entertainment'));
   });
 })();
-
-// 엔터테인먼트 버튼의 CRT 오류 깜빡임: 초기화면에 들어올 때마다 툭……툭툭 몇 번만, 그 뒤로는 정상
-(() => {
-  const homeEl = document.getElementById('home');
-  const glitchEl = document.getElementById('homeEntertainmentGlitch');
-
-  const START_DELAY = 170; // CRT 전환(가로줄)이 끝난 직후
-  const FLICKERS = [ // [첫 깜빡임 기준 시작 시각, 길이] (ms)
-    [0, 80],
-    [950, 60],
-    [1080, 70],
-    [1420, 90],
-    [2180, 70],
-    [2490, 85],
-  ];
-
-  let timers = [];
-  const stop = () => {
-    timers.forEach(clearTimeout);
-    timers = [];
-    glitchEl.classList.remove('is-glitching');
-  };
-
-  const play = () => {
-    stop();
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    FLICKERS.forEach(([at, length]) => {
-      timers.push(setTimeout(() => glitchEl.classList.add('is-glitching'), START_DELAY + at));
-      timers.push(setTimeout(() => glitchEl.classList.remove('is-glitching'), START_DELAY + at + length));
-    });
-  };
-
-  new MutationObserver(() => (homeEl.hidden ? stop() : play()))
-    .observe(homeEl, { attributes: true, attributeFilter: ['hidden'] });
-})();
